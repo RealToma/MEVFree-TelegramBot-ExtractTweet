@@ -8,7 +8,7 @@
     "dotenv": "^16.3.1",
     "grammy": "^1.19.1",
     "nodemon": "^3.0.1",
-    "recharts": "^2.8.0"
+    "twit": "^2.2.11"
   },
   "scripts": {
     "start": "nodemon bot.ts"

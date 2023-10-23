@@ -1,27 +1,18 @@
 require('dotenv').config();
 const { Bot, session } = require("grammy");
 const { shortAddress, shortDate, fetchTokenData } = require("./utils/functions");
-const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } = require('recharts');
+const Twit = require('twit');
 
+// Create a new Grammy bot
 const bot = new Bot(process.env.API_KEY_TELEGRAM_BOT);
 
-// Handle the /start command.
-// bot.command("start", async (ctx: any) => {
-//     try {
-//     const html: any = `
-//     <b>Welcome to Thomas Ken's Bot!</b>\n
-// If you need help, please enter "/help".
-// Enjoy your time...Thanks.
-//   `;
-
-//     // Send the token information as HTML to the user
-//     await ctx.reply(html, { parse_mode: "HTML" });
-
-//     }
-//     catch (error) {
-//         console.log("error-price:", error);
-//     }
-// });
+// Create a new Twitter client
+const twitterClient = new Twit({
+    consumer_key: 'YOUR_TWITTER_CONSUMER_KEY',
+    consumer_secret: 'YOUR_TWITTER_CONSUMER_SECRET',
+    access_token: 'YOUR_TWITTER_ACCESS_TOKEN',
+    access_token_secret: 'YOUR_TWITTER_ACCESS_TOKEN_SECRET'
+});
 
 
 bot.use(session());
@@ -32,121 +23,65 @@ bot.use(async (ctx: any, next: any) => {
 });
 
 
+// bot.command('start', (ctx: any) => {
+//     const html: any = `
+//             <b>Welcome to Thomas's TweetInfo Bot!</b>\n
+// If you need help, please enter "/help".
+// Enjoy your time...Thanks.
+//               `;
+//     ctx.reply(html, { parse_mode: "HTML" });
+// });
+
 bot.on('message', async (ctx: any) => {
     var currentDate = new Date();
     var currentTime = currentDate.toLocaleString('en-US', { timeZone: 'America/New_York' });
-    console.log(`Event: ${ctx.message.text} (${currentTime})`)
+    console.log(`Event Time: ${ctx.message.text} (${currentTime})`)
+    let textCommand = ctx.message.text.split(' ')[0];
+
     try {
-        if (ctx.message.text === '/start') {
+        if (textCommand === '/start') {
             const html: any = `
-            <b>Welcome to Thomas Ken's Bot!</b>\n
+            <b>Welcome to Thomas's TweetInfo Bot!</b>\n
 If you need help, please enter "/help".
 Enjoy your time...Thanks.
           `;
-
-            // Send the token information as HTML to the user
             await ctx.reply(html, { parse_mode: "HTML" });
         }
-        else if (ctx.message.text === '/help') {
+        else if (textCommand === '/help') {
             const html: any = `
             <b>Commands:</b>\n
 <i><b>/start</b></i>: Start a bot.
-<i><b>/info</b></i>: Display MEVFree's information.
-<i><b>/price</b></i>: Display MEVFree's price.
-<i><b>/graph</b></i>: Coming soon.
+<i><b>/tweet [ID]</b></i>: Display tweet's information by ID.
 <i><b>/help</b></i>: Display command instructions.
           `;
 
-            // Send the token information as HTML to the user
             await ctx.reply(html, { parse_mode: "HTML" });
         }
-        else if (ctx.message.text === '/price') {
-            const [_, tokenPrice]: any = await fetchTokenData();
-            await ctx.reply(`MEVFree Price: $${tokenPrice}`);
-        }
-        else if (ctx.message.text === '/info') {
-            // Fetch token price data from CoinMarketCap API
-            const [tokenData]: any = await fetchTokenData();
+        else if (textCommand === '/tweet') {
+            // get tweet's id from command text
+            let tweetId = ctx.message.text.split(' ')[1];
+            // console.log("tweetId:", tweetId);
 
-            // Format the token information as HTML
-            const html: any = `
-<b>${tokenData.name} Information</b>\n
-Name: ${tokenData.name}
-Symbol: ${tokenData.symbol}
-Price: $${tokenData.quote.USD.price.toFixed(5)}
-CMC Rank: ${tokenData.cmc_rank}
-Address: <a href="https://etherscan.io/token/${tokenData.platform.token_address}"><u>${shortAddress(tokenData.platform.token_address)}</u></a>
-Max Supply: ${tokenData.max_supply}
-Circulating Supply: ${tokenData.circulating_supply}
-Total Supply: ${tokenData.total_supply}
-Date Added: <i>${shortDate(tokenData.date_added)}</i>
-`;
-            // Send the token information as HTML to the user
-            await ctx.reply(html, { parse_mode: "HTML" });
-        }
-        else if (ctx.message.text === '/graph') {
-            await ctx.reply(`Coming soon, please wait!`);
+            const { data: tweet } = await twitterClient.get('statuses/show/:id', {
+                id: tweetId,
+                tweet_mode: 'extended'
+            });
 
-            const tokenPriceData: any = await fetchTokenData();
+            // Extract the tweet text and user name
+            const tweetText = tweet.full_text;
+            const userName = tweet.user.name;
 
-            // Prepare data for the chart
-            const chartData: any = tokenPriceData.map((price: any, index: any) => ({
-                date: new Date().toLocaleTimeString(),
-                price,
-            }));
-
-            const data: any = [
-                {
-                    name: 'Sun',
-                    price: 1,
-                    trading: 3908,
-                    staked: 2000,
-                },
-                {
-                    name: 'Mon',
-                    price: 0.4,
-                    trading: 2400,
-                    staked: 2400,
-                },
-                {
-                    name: 'Tue',
-                    price: 0.8,
-                    trading: 1398,
-                    staked: 2210,
-                },
-                {
-                    name: 'Wed',
-                    price: 0.5,
-                    trading: 3908,
-                    staked: 2000,
-                },
-                {
-                    name: 'Thr',
-                    price: 1.2,
-                    trading: 4800,
-                    staked: 1881,
-                },
-                {
-                    name: 'Fri',
-                    price: 0.1,
-                    trading: 2400,
-                    staked: 2400,
-                },
-                {
-                    name: 'Sat',
-                    price: 0.8,
-                    trading: 1398,
-                    staked: 2210,
-                },
-            ];
+            // Reply with the tweet information
+            await ctx.reply(`@${userName}: ${tweetText}`);
         }
         else {
-            await ctx.reply("This command is not listed in help.");
+            await ctx.reply("This command is not listed. If you need help, please enter '/help'.");
         }
     }
 
     catch (error) {
-        console.log("error-telegrambot:", error)
+        console.log("error-telegrambot:", error);
+        await ctx.reply('Sorry, an error occurred while fetching the tweet information.');
     }
 });
 
