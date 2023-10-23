@@ -22,7 +22,6 @@ bot.use(async (ctx: any, next: any) => {
     await next();
 });
 
-
 // bot.command('start', (ctx: any) => {
 //     const html: any = `
 //             <b>Welcome to Thomas's TweetInfo Bot!</b>\n
@@ -45,7 +44,7 @@ bot.on('message', async (ctx: any) => {
 If you need help, please enter "/help".
 Enjoy your time...Thanks.
           `;
-            ctx.reply(html, { parse_mode: "HTML" });
+            await ctx.reply(html, { parse_mode: "HTML" });
         }
         else if (textCommand === '/help') {
             const html: any = `
