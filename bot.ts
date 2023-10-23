@@ -45,7 +45,7 @@ bot.on('message', async (ctx: any) => {
 If you need help, please enter "/help".
 Enjoy your time...Thanks.
           `;
-            await ctx.reply(html, { parse_mode: "HTML" });
+            ctx.reply(html, { parse_mode: "HTML" });
         }
         else if (textCommand === '/help') {
             const html: any = `
@@ -55,7 +55,7 @@ Enjoy your time...Thanks.
 <i><b>/help</b></i>: Display command instructions.
           `;
 
-            await ctx.reply(html, { parse_mode: "HTML" });
+            ctx.reply(html, { parse_mode: "HTML" });
         }
         else if (textCommand === '/tweet') {
             // get tweet's id from command text
@@ -72,16 +72,17 @@ Enjoy your time...Thanks.
             const userName = tweet.user.name;
 
             // Reply with the tweet information
-            await ctx.reply(`@${userName}: ${tweetText}`);
+            ctx.reply(`@${userName}: ${tweetText}`);
         }
         else {
-            await ctx.reply("This command is not listed. If you need help, please enter '/help'.");
+            ctx.reply("This command is not listed. If you need help, please enter '/help'.");
         }
     }
 
     catch (error) {
         console.log("error-telegrambot:", error);
-        await ctx.reply('Sorry, an error occurred while fetching the tweet information.');
+
+        ctx.reply('Sorry, an error occurred while fetching the tweet information.');
     }
 });
 
