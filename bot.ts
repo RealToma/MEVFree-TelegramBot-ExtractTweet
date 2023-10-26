@@ -8,10 +8,10 @@ const bot = new Bot(process.env.API_KEY_TELEGRAM_BOT);
 
 // Create a new Twitter client
 const twitterClient = new Twit({
-    consumer_key: 'YOUR_TWITTER_CONSUMER_KEY',
-    consumer_secret: 'YOUR_TWITTER_CONSUMER_SECRET',
-    access_token: 'YOUR_TWITTER_ACCESS_TOKEN',
-    access_token_secret: 'YOUR_TWITTER_ACCESS_TOKEN_SECRET'
+    consumer_key: process.env.TWITTER_CONSUMER_KEY,
+    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+    access_token: process.env.TWITTER_ACCESS_TOKEN,
+    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 
 
