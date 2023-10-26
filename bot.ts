@@ -77,13 +77,18 @@ Enjoy your time...Thanks.
             //     return;
             // }
 
-            console.log("tweet:", data)
+            console.log("tweet:", data);
             // Extract the tweet text and user name
             // const tweetText = tweet.full_text;
             // const userName = tweet.user.name;
 
-            // // Reply with the tweet information
-            // await ctx.reply(`@${userName}: ${tweetText}`);
+            // Reply with the tweet information
+            const html: any = `
+            <b>Tweet ID: ${data[0].id}</b>\n
+<b>Tweet Content:</b> ${data[0].text}
+          `;
+
+            await ctx.reply(html, { parse_mode: "HTML" });
         }
 
         else {
