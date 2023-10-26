@@ -62,11 +62,11 @@ Enjoy your time...Thanks.
             let tweetId = ctx.message.text.split(' ')[1];
             // console.log("tweetId:", tweetId);
 
-            const { data: tweet } = await twitterClient.get('statuses/show/:id', {
+            const { data: tweet } = await twitterClient.get('tweets', {
                 id: tweetId,
-                tweet_mode: 'extended'
             });
 
+            console.log("tweet:", tweet)
             // Extract the tweet text and user name
             const tweetText = tweet.full_text;
             const userName = tweet.user.name;
