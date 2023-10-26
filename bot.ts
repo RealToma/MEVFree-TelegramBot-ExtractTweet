@@ -64,6 +64,9 @@ Enjoy your time...Thanks.
 
             const { data: tweet } = await twitterClient.get('tweets', {
                 id: tweetId,
+                tweet: {
+                    fields: ['created_at', 'entities', 'public_metrics', 'author_id'],
+                },
             });
 
             console.log("tweet:", tweet)
