@@ -1,17 +1,18 @@
 require('dotenv').config();
 const { Bot, session } = require("grammy");
 const { shortAddress, shortDate, fetchTokenData } = require("./utils/functions");
-const Twit = require('twit');
+const Twitter = require('twitter-v2');
 
 // Create a new Grammy bot
 const bot = new Bot(process.env.API_KEY_TELEGRAM_BOT);
 
 // Create a new Twitter client
-const twitterClient = new Twit({
+const twitterClient = new Twitter({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-    access_token: process.env.TWITTER_ACCESS_TOKEN,
-    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+    access_token_key: process.env.TWITTER_ACCESS_TOKEN,
+    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+    // timeout_ms: 60 * 1000
 });
 
 
@@ -73,6 +74,7 @@ Enjoy your time...Thanks.
             // Reply with the tweet information
             await ctx.reply(`@${userName}: ${tweetText}`);
         }
+
         else {
             await ctx.reply("This command is not listed. If you need help, please enter '/help'.");
         }
