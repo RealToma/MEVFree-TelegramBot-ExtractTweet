@@ -62,26 +62,28 @@ Enjoy your time...Thanks.
             let tweetId = ctx.message.text.split(' ')[1];
             // console.log("tweetId:", tweetId);
 
-            const { data: tweet, errors } = await twitterClient.get('tweets', {
-                id: tweetId,
-                tweet: {
-                    fields: ['created_at', 'entities', 'public_metrics', 'author_id'],
-                },
-            });
+            // const { data: tweet, errors } = await twitterClient.get('tweets', {
+            //     id: tweetId,
+            //     tweet: {
+            //         fields: ['created_at', 'entities', 'public_metrics', 'author_id'],
+            //     },
+            // });
 
+            const { data } = await twitterClient.get('tweets', {
+                ids: tweetId
+            })
+            // if (errors) {
+            //     console.log('Tweet errors:', errors);
+            //     return;
+            // }
 
-            if (errors) {
-                console.log('Tweet errors:', errors);
-                return;
-            }
-
-            console.log("tweet:", tweet)
+            console.log("tweet:", data)
             // Extract the tweet text and user name
-            const tweetText = tweet.full_text;
-            const userName = tweet.user.name;
+            // const tweetText = tweet.full_text;
+            // const userName = tweet.user.name;
 
-            // Reply with the tweet information
-            await ctx.reply(`@${userName}: ${tweetText}`);
+            // // Reply with the tweet information
+            // await ctx.reply(`@${userName}: ${tweetText}`);
         }
 
         else {
