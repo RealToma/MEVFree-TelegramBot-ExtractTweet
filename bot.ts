@@ -62,12 +62,18 @@ Enjoy your time...Thanks.
             let tweetId = ctx.message.text.split(' ')[1];
             // console.log("tweetId:", tweetId);
 
-            const { data: tweet } = await twitterClient.get('tweets', {
+            const { data: tweet, errors } = await twitterClient.get('tweets', {
                 id: tweetId,
                 tweet: {
                     fields: ['created_at', 'entities', 'public_metrics', 'author_id'],
                 },
             });
+
+
+            if (errors) {
+                console.log('Tweet errors:', errors);
+                return;
+            }
 
             console.log("tweet:", tweet)
             // Extract the tweet text and user name
